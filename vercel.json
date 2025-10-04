@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "buildCommand": "echo 'No build required for serverless functions'",
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/payment-metadata/findByRSSItem", "destination": "/api/v1/payment-metadata/findByRSSItem" },
+    { "source": "/payment-metadata/:id", "destination": "/api/v1/payment-metadata/[id]" },
+    { "source": "/payment-metadata", "destination": "/api/v1/payment-metadata/index" }
+  ],
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "@vercel/node@3.0.11"
+    }
+  }
+}
+
