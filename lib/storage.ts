@@ -137,6 +137,43 @@ class PaymentMetadataStorage {
   }
 
   /**
+   * Find all payment metadata with optional pagination
+   */
+  async findAll(limit: number = 100, offset: number = 0): Promise<StoredPaymentMetadata[]> {
+    const client = await this.getClient();
+    
+    // Get all payment keys
+    const keys = await client.keys(`${this.PAYMENT_PREFIX}*`);
+    
+    if (!keys || keys.length === 0) {
+      return [];
+    }
+
+    // Apply pagination
+    const paginatedKeys = keys.slice(offset, offset + limit);
+    
+    // Fetch all payment metadata entries
+    const results: StoredPaymentMetadata[] = [];
+    for (const key of paginatedKeys) {
+      const data = await client.get(key);
+      if (data) {
+        results.push(JSON.parse(data) as StoredPaymentMetadata);
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * Get total count of all payments
+   */
+  async getTotalCount(): Promise<number> {
+    const client = await this.getClient();
+    const keys = await client.keys(`${this.PAYMENT_PREFIX}*`);
+    return keys ? keys.length : 0;
+  }
+
+  /**
    * Validate that the updateToken matches for a given payment
    */
   async validateUpdateToken(id: string, updateToken: string): Promise<boolean> {
