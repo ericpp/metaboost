@@ -99,6 +99,7 @@
             margin-left: 280px;
             flex: 1;
             background: #fff;
+            min-width: 0;
         }
 
         .top-bar {
@@ -109,12 +110,21 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #444d56;
+            flex-wrap: wrap;
+            gap: 10px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .base-url {
             font-family: 'Courier New', monospace;
             font-size: 0.9em;
             color: #58a6ff;
+            word-break: break-all;
+            flex: 1 1 auto;
+            min-width: 0;
+            max-width: 100%;
+            overflow-wrap: break-word;
         }
 
         .view-data-link {
@@ -126,6 +136,8 @@
             font-size: 0.9em;
             font-weight: 600;
             transition: background 0.2s ease;
+            white-space: nowrap;
+            flex: 0 0 auto;
         }
 
         .view-data-link:hover {
@@ -430,10 +442,43 @@
 
             .main-content {
                 margin-left: 0;
+                width: 100%;
             }
 
             .content {
                 padding: 20px;
+            }
+
+            .top-bar {
+                padding: 15px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 12px 15px;
+                justify-content: center;
+            }
+
+            .base-url {
+                flex-basis: 100%;
+                text-align: center;
+                margin-bottom: 5px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .top-bar {
+                padding: 10px 15px;
+            }
+
+            .base-url {
+                font-size: 0.8em;
+            }
+
+            .view-data-link {
+                font-size: 0.85em;
+                padding: 6px 12px;
             }
         }
     </style>
