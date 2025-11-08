@@ -169,7 +169,7 @@ curl "https://metaboost.vercel.app/v1/payment-metadata/findByRSSItem?podcastGuid
 }
 ```
 
-### Podcast Boost (Value4Value)
+### Podcast Boost
 ```json
 {
   "type": "bitcoin-lightning",

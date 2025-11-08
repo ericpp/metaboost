@@ -525,17 +525,8 @@
                 <section id="introduction">
                     <h2>MetaBoost API Specification</h2>
                     <p class="description">
-                        MetaBoost provides a cryptocurrency-agnostic REST API for storing and retrieving Value4Value payment 
-                        metadata for podcast applications. Store payment data from any cryptocurrency network (Bitcoin Lightning, 
-                        Monero, or others) using a flexible, unified metadata structure.
+                        MetaBoost provides a REST API for storing and retrieving podcast payment metadata for any payment type (Bitcoin Lightning, Monero, or others).
                     </p>
-                    <div class="info-box">
-                        <strong>Value4Value Model:</strong> This API is designed for the podcast Value4Value ecosystem, 
-                        where listeners support creators directly through cryptocurrency payments. The metadata structure 
-                        is flexible and payment-type agnostic - use the same schema regardless of which cryptocurrency 
-                        network processed the payment. Store boost messages, sender information, payment amounts, and 
-                        episode attribution.
-                    </div>
                 </section>
 
                 <section id="base-url">
@@ -548,13 +539,9 @@
                 <section id="authentication">
                     <h3>Authentication</h3>
                     <p class="description">
-                        Most endpoints require no authentication. Update and delete operations require an 
+                        Authetnication is not required. Update and delete operations require an 
                         <code class="param-name">updateToken</code> that is returned when creating metadata.
                     </p>
-                    <div class="warning-box">
-                        <strong>⚠️ Security Note:</strong> Store the <code class="param-name">updateToken</code> securely. 
-                        Anyone with this token can modify or delete your payment metadata.
-                    </div>
                 </section>
 
                 <section id="create-metadata">
@@ -567,9 +554,8 @@
                         </div>
                         <div class="endpoint-body">
                             <p class="endpoint-description">
-                                Create new payment metadata for a Value4Value transaction. Store payment information from any 
-                                cryptocurrency network using a flexible metadata structure. Include amount, sender, boost message, 
-                                and podcast episode attribution.
+                                Create new payment metadata. Store payment information from any payment type 
+                                including amount, sender, boost message, and podcast episode attribution.
                             </p>
 
                             <div class="schema-section">
@@ -589,13 +575,13 @@
                                             <td><span class="param-name">type</span></td>
                                             <td><span class="param-type">string</span></td>
                                             <td>✓</td>
-                                            <td>Payment network identifier: "bitcoin-lightning", "monero", or any cryptocurrency</td>
+                                            <td>Payment type: "bitcoin-lightning", "monero", or any other payment type</td>
                                         </tr>
                                         <tr>
                                             <td><span class="param-name">metadata</span></td>
                                             <td><span class="param-type">object</span></td>
                                             <td>✓</td>
-                                            <td>bLIP-0010 metadata object containing Value4Value payment details - same structure for all payment types</td>
+                                            <td>Metadata object containing payment details - same structure for all payment types</td>
                                         </tr>
                                         <tr>
                                             <td><span class="param-name">signature</span></td>
@@ -608,7 +594,7 @@
                             </div>
 
                             <div class="schema-section">
-                                <div class="schema-title">Example: Value4Value Boost Payment</div>
+                                <div class="schema-title">Example: Boost Payment</div>
                                 <div class="json-example">
 <pre>{
   "type": "bitcoin-lightning",
@@ -624,15 +610,15 @@
     "sender_name": "Alice",
     "sender_id": "nSiq7id78JAdH9uY1pIy",
     "value_msat_total": 100000,
-    "message": "Great episode on Value4Value!"
+    "message": "Great episode on podcasting!"
   },
   "signature": "f1e2d3c4b5a6789012345678901234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef5678"
 }</pre>
                                 </div>
                                 <p class="endpoint-description" style="margin-top: 15px;">
-                                    <strong>Note:</strong> The metadata structure follows <strong>bLIP-0010</strong> and is the same for all payment types. 
-                                    Use <code>type</code> to indicate the cryptocurrency network (bitcoin-lightning, monero, etc.), 
-                                    and populate the metadata fields according to the <a href="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/examples/value/blip-0010.md" target="_blank" style="color: #0366d6; text-decoration: underline;">bLIP-0010 specification</a>.
+                                    <strong>Note:</strong> The metadata structure follows <strong>Podcast TLV</strong> specification and is the same across all payment types. 
+                                    Use <code>type</code> to indicate the payment type (bitcoin-lightning, monero, etc.), 
+                                    and populate the metadata fields according to the <a href="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/examples/value/blip-0010.md" target="_blank" style="color: #0366d6; text-decoration: underline;">Podcast TLV specification</a>.
                                 </p>
                             </div>
 
@@ -958,7 +944,7 @@
                                 <span class="property-type">string</span>
                                 <span class="required-badge">REQUIRED</span>
                             </div>
-                            <div class="property-description">Payment network identifier. Common values: "bitcoin-lightning", "monero", or any cryptocurrency name</div>
+                            <div class="property-description">Payment type. Common values: "bitcoin-lightning", "monero", or any other payment type</div>
                         </div>
                         <div class="schema-property">
                             <div>
@@ -966,7 +952,7 @@
                                 <span class="property-type">object</span>
                                 <span class="required-badge">REQUIRED</span>
                             </div>
-                            <div class="property-description">bLIP-0010 metadata object containing Value4Value payment details - same structure for all payment types</div>
+                            <div class="property-description">Metadata object containing payment details - same structure for all payment types</div>
                         </div>
                         <div class="schema-property">
                             <div>
@@ -974,34 +960,32 @@
                                 <span class="property-type">string</span>
                                 <span class="optional-badge">OPTIONAL</span>
                             </div>
-                            <div class="property-description">Cryptographic signature for the entire payment metadata (hex encoded)</div>
+                            <div class="property-description">Cryptographic signature for the metadata object (hex encoded)</div>
                         </div>
                     </div>
                 </section>
 
                 <section id="metadata-object">
-                    <h3>Metadata Object (bLIP-0010)</h3>
+                    <h3>Metadata Object</h3>
                     <p class="description">
-                        The metadata object follows the <strong>bLIP-0010</strong> specification for Value4Value payment metadata. 
-                        This is a <strong>unified, payment-agnostic structure</strong> that works the same way for Lightning, Monero, 
-                        or any other cryptocurrency network. The <code>type</code> field indicates which network was used, but the 
+                        The metadata object follows the <strong>Podcast TLV</strong> specification. This is a <strong>unified, 
+                        payment-agnostic structure</strong> that works the same way for Lightning, Monero, or any other 
+                        payment type. The <code>type</code> field indicates which payment type was used, but the 
                         metadata fields remain consistent across all payment types.
                     </p>
                     
                     <div class="info-box">
-                        <strong>Based on bLIP-0010:</strong> This API stores the same metadata fields that are used in Lightning TLV 
-                        records for Value4Value payments. The structure is cryptocurrency-agnostic and works identically regardless 
-                        of which payment network processes the transaction. See the <a href="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/examples/value/blip-0010.md" target="_blank" style="color: #0366d6; text-decoration: underline;">bLIP-0010 specification</a> for complete field documentation.
+                        <strong>Based on Podcast TLV:</strong> This API uses the Podcast TLV specification to define the metadata object structure.
+                        See the <a href="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/examples/value/blip-0010.md" target="_blank" style="color: #0366d6; text-decoration: underline;">Podcast TLV specification</a> for complete field documentation.
                     </div>
 
                     <h4>Metadata Fields</h4>
                     <p class="description" style="margin-bottom: 15px;">
-                        The metadata structure follows the <strong>bLIP-0010</strong> specification for Value4Value payment metadata. 
-                        These fields are cryptocurrency-agnostic and work the same way for Lightning, Monero, or any other payment network.
+                        These fields are payment-type agnostic and work the same way for all payment types.
                     </p>
                     
                     <div class="info-box">
-                        <strong>📖 Full Specification:</strong> See the complete <a href="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/examples/value/blip-0010.md" target="_blank" style="color: #0366d6; text-decoration: underline;">bLIP-0010 documentation</a> for all available fields, their types, and usage requirements.
+                        <strong>📖 Full Specification:</strong> See the complete <a href="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/examples/value/blip-0010.md" target="_blank" style="color: #0366d6; text-decoration: underline;">Podcast TLV documentation</a> for all available fields, their types, and usage requirements.
                     </div>
 
                     <h4>Example: Boost Payment (Lightning)</h4>
@@ -1067,17 +1051,30 @@
                         (sort keys alphabetically) before signing/verifying.
                     </div>
 
+                    <h4>Why Canonicalization Matters</h4>
+                    <p class="description">
+                        These two JSON objects are semantically identical but would produce different signatures without canonicalization:
+                    </p>
+                    <div class="code-block">
+                        <pre>const obj1 = { a: 1, b: 2 };
+const obj2 = { b: 2, a: 1 };
+
+JSON.stringify(obj1);  // '{"a":1,"b":2}'
+JSON.stringify(obj2);  // '{"b":2,"a":1}'
+// ❌ Different strings = different signatures!</pre>
+                    </div>
+
                     <h4>Signing Process</h4>
                     <ol style="margin: 15px 0; padding-left: 25px;">
-                        <li>Canonicalize the metadata JSON (sorted keys, no whitespace)</li>
-                        <li>Hash the canonical string (e.g., SHA-256)</li>
-                        <li>Sign the hash with your private key (secp256k1, ed25519, etc.)</li>
-                        <li>Encode signature as hex string</li>
+                        <li><strong>Canonicalize</strong> the metadata JSON (sorted keys alphabetically, recursively, no whitespace)</li>
+                        <li><strong>Hash</strong> the canonical string (e.g., SHA-256)</li>
+                        <li><strong>Sign</strong> the hash with your private key (secp256k1, ed25519, etc.)</li>
+                        <li><strong>Encode</strong> signature as hex string</li>
                     </ol>
 
-                    <h4>Example: Canonical JSON</h4>
+                    <h4>Example: Canonical JSON Function</h4>
                     <div class="json-example">
-<pre>// JavaScript canonicalization function
+                        <pre>// JavaScript canonicalization function
 function canonicalizeJSON(obj) {
   if (obj === null) return 'null';
   if (typeof obj !== 'object') return JSON.stringify(obj);
@@ -1085,14 +1082,30 @@ function canonicalizeJSON(obj) {
     return '[' + obj.map(canonicalizeJSON).join(',') + ']';
   }
   
-  // Sort keys alphabetically
+  // CRITICAL: Sort keys alphabetically (recursively)
   const sortedKeys = Object.keys(obj).sort();
   const pairs = sortedKeys.map(key => {
     return '"' + key + '":' + canonicalizeJSON(obj[key]);
   });
   return '{' + pairs.join(',') + '}';
-}</pre>
+}
+
+// Test: Both produce same canonical output
+const test1 = { z: 3, a: 1, m: 2 };
+const test2 = { a: 1, m: 2, z: 3 };
+console.log(canonicalizeJSON(test1)); // {"a":1,"m":2,"z":3}
+console.log(canonicalizeJSON(test2)); // {"a":1,"m":2,"z":3}
+// ✅ Same output = same signature!</pre>
                     </div>
+
+                    <h4>Key Rules for Canonicalization</h4>
+                    <ul style="margin: 15px 0; padding-left: 25px;">
+                        <li>Sort all keys <strong>alphabetically</strong> at every level (recursive)</li>
+                        <li>Arrays maintain order (don't sort array elements)</li>
+                        <li>Remove all whitespace between elements</li>
+                        <li>Use consistent formatting for numbers, strings, booleans, and null</li>
+                        <li>Both signer and verifier <strong>must use the same function</strong></li>
+                    </ul>
                 </section>
             </div>
 
