@@ -39,8 +39,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Return only public fields (without updateToken)
     const response: PaymentMetadata[] = results.map(item => ({
       id: item.id,
-      jpt: item.jpt,
       type: item.type,
+      metadata: item.metadata,
+      signature: item.signature,
       podcastGuid: item.podcastGuid,
       rssItemGuid: item.rssItemGuid
     }));

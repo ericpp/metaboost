@@ -1,6 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { PaymentType } from './types.js';
-import { validateJPT } from './jpt.js';
 
 export function sendError(res: VercelResponse, status: number, message: string) {
   return res.status(status).json({ error: message });
@@ -20,25 +19,32 @@ export function isValidPaymentType(type: string): type is PaymentType {
 }
 
 export function validatePaymentMetadataNew(body: any): { valid: boolean; error?: string } {
-  // Validate JPT
-  if (!body.jpt) {
-    return { valid: false, error: 'jpt is required' };
-  }
-
-  // JPT can be a string (encoded) or object (decoded)
-  if (typeof body.jpt !== 'string' && typeof body.jpt !== 'object') {
-    return { valid: false, error: 'jpt must be a string or object' };
-  }
-
-  // Validate JPT structure
-  const jptValidation = validateJPT(body.jpt);
-  if (!jptValidation.valid) {
-    return { valid: false, error: `Invalid JPT: ${jptValidation.error}` };
-  }
-  
-  // Validate payment type
+  // Validate payment type (always required)
   if (!body.type || !isValidPaymentType(body.type)) {
     return { valid: false, error: 'type is required and must be either "bitcoin-lightning" or "monero"' };
+  }
+  
+  // Validate metadata is provided and is an object
+  if (!body.metadata) {
+    return { valid: false, error: 'metadata is required' };
+  }
+  
+  if (typeof body.metadata !== 'object' || body.metadata === null || Array.isArray(body.metadata)) {
+    return { valid: false, error: 'metadata must be an object' };
+  }
+  
+  // Validate optional signature
+  if (body.signature !== undefined && typeof body.signature !== 'string') {
+    return { valid: false, error: 'signature must be a string' };
+  }
+  
+  // Validate optional query fields
+  if (body.podcastGuid !== undefined && typeof body.podcastGuid !== 'string') {
+    return { valid: false, error: 'podcastGuid must be a string' };
+  }
+  
+  if (body.rssItemGuid !== undefined && typeof body.rssItemGuid !== 'string') {
+    return { valid: false, error: 'rssItemGuid must be a string' };
   }
   
   return { valid: true };
@@ -53,25 +59,23 @@ export function validatePaymentMetadataUpdate(body: any): { valid: boolean; erro
     return { valid: false, error: 'updateToken is required and must be a valid UUID' };
   }
   
-  // Validate JPT
-  if (!body.jpt) {
-    return { valid: false, error: 'jpt is required' };
-  }
-
-  // JPT can be a string (encoded) or object (decoded)
-  if (typeof body.jpt !== 'string' && typeof body.jpt !== 'object') {
-    return { valid: false, error: 'jpt must be a string or object' };
-  }
-
-  // Validate JPT structure
-  const jptValidation = validateJPT(body.jpt);
-  if (!jptValidation.valid) {
-    return { valid: false, error: `Invalid JPT: ${jptValidation.error}` };
-  }
-  
-  // Validate payment type
+  // Validate payment type (always required)
   if (!body.type || !isValidPaymentType(body.type)) {
     return { valid: false, error: 'type is required and must be either "bitcoin-lightning" or "monero"' };
+  }
+  
+  // Validate metadata is provided and is an object
+  if (!body.metadata) {
+    return { valid: false, error: 'metadata is required' };
+  }
+  
+  if (typeof body.metadata !== 'object' || body.metadata === null || Array.isArray(body.metadata)) {
+    return { valid: false, error: 'metadata must be an object' };
+  }
+  
+  // Validate optional signature
+  if (body.signature !== undefined && typeof body.signature !== 'string') {
+    return { valid: false, error: 'signature must be a string' };
   }
   
   return { valid: true };

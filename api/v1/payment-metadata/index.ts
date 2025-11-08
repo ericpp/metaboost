@@ -53,9 +53,10 @@ async function handlePost(req: VercelRequest, res: VercelResponse) {
     // Create metadata
     const metadata: StoredPaymentMetadata = {
       id,
-      jpt: body.jpt,
       type: body.type,
       updateToken,
+      metadata: body.metadata,
+      signature: body.signature,
       podcastGuid: body.podcastGuid,
       rssItemGuid: body.rssItemGuid
     };
@@ -110,9 +111,10 @@ async function handlePut(req: VercelRequest, res: VercelResponse) {
     // Update metadata
     const updatedMetadata: StoredPaymentMetadata = {
       id: body.id,
-      jpt: body.jpt,
       type: body.type,
       updateToken: newUpdateToken,
+      metadata: body.metadata,
+      signature: body.signature,
       podcastGuid: existingMetadata.podcastGuid,
       rssItemGuid: existingMetadata.rssItemGuid
     };

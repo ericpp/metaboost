@@ -1,7 +1,7 @@
 {
   "name": "metaboost",
-  "version": "0.1.0",
-  "description": "MetaBoost API - Payment Metadata Service",
+  "version": "0.2.0",
+  "description": "MetaBoost API - Simple Payment Metadata Storage",
   "type": "module",
   "main": "index.js",
   "scripts": {

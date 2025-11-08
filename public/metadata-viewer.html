@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MetaBoost - Payment Metadata Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #24292e;
+            background: #f6f8fa;
+        }
+
+        .header {
+            background: #24292e;
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #0366d6;
+        }
+
+        .header h1 {
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .header-subtitle {
+            color: #959da5;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .back-link {
+            background: #0366d6;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .back-link:hover {
+            background: #0256c7;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 40px;
+        }
+
+        .controls-bar {
+            background: white;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #d1d5da;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #0366d6;
+            box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-group select {
+            padding: 10px 15px;
+            border: 1px solid #d1d5da;
+            border-radius: 6px;
+            font-size: 1em;
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background: #238636;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: background 0.2s ease;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: #2ea043;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #0366d6;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #586069;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0366d6;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #ffeef0;
+            border: 1px solid #d73a49;
+            color: #d73a49;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .metadata-table {
+            background: white;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: #f6f8fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e4e8;
+            font-weight: 600;
+            color: #24292e;
+        }
+
+        .payment-row {
+            border-bottom: 1px solid #e1e4e8;
+            transition: background 0.2s ease;
+        }
+
+        .payment-row:hover {
+            background: #f6f8fa;
+        }
+
+        .payment-row:last-child {
+            border-bottom: none;
+        }
+
+        .payment-header {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            gap: 20px;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .payment-type {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        .type-lightning {
+            background: #ffd60a;
+            color: #333;
+        }
+
+        .type-monero {
+            background: #ff6600;
+            color: white;
+        }
+
+        .payment-id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #586069;
+        }
+
+        .payment-amount {
+            font-weight: 600;
+            color: #0366d6;
+            white-space: nowrap;
+        }
+
+        .expand-indicator {
+            color: #586069;
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        .expand-indicator.expanded {
+            transform: rotate(180deg);
+        }
+
+        .payment-details {
+            padding: 0 20px 20px 20px;
+            display: none;
+            border-top: 1px solid #e1e4e8;
+            background: #fafbfc;
+        }
+
+        .payment-details.visible {
+            display: block;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .detail-label {
+            font-size: 0.85em;
+            color: #586069;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #24292e;
+            word-break: break-all;
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #e1e4e8;
+        }
+
+        .boost-message {
+            background: #fffbdd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .podcast-info {
+            background: #e1f0ff;
+            border-left: 4px solid #0366d6;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+
+        .podcast-info-title {
+            font-weight: 600;
+            color: #0366d6;
+            margin-bottom: 8px;
+        }
+
+        .json-toggle {
+            margin-top: 15px;
+            padding: 8px 16px;
+            background: #f6f8fa;
+            border: 1px solid #d1d5da;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            color: #24292e;
+            transition: background 0.2s ease;
+        }
+
+        .json-toggle:hover {
+            background: #e1e4e8;
+        }
+
+        .json-view {
+            background: #24292e;
+            color: #f6f8fa;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .json-view.visible {
+            display: block;
+        }
+
+        .json-view pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 30px;
+            padding: 20px 0;
+        }
+
+        .page-info {
+            color: #586069;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #24292e;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #586069;
+        }
+
+        .signature-badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .payment-header {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>💰 Value4Value Payment Metadata</h1>
+            <div class="header-subtitle">Browse podcast supporter payments from any cryptocurrency network</div>
+        </div>
+        <a href="index.html" class="back-link">← API Documentation</a>
+    </div>
+
+    <div class="container">
+        <div class="controls-bar">
+            <button class="btn" onclick="loadMetadata()" id="refreshBtn">
+                🔄 Refresh Data
+            </button>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by podcast, episode, sender, message, or any field..." onkeyup="handleSearch()">
+            </div>
+            <div class="filter-group">
+                <label for="typeFilter">Network:</label>
+                <select id="typeFilter" onchange="applyFilters()">
+                    <option value="">All Networks</option>
+                    <option value="bitcoin-lightning">⚡ Bitcoin Lightning</option>
+                    <option value="monero">🔒 Monero</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-value" id="totalCount">0</div>
+                <div class="stat-label">Total Payments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="lightningCount">0</div>
+                <div class="stat-label">⚡ Lightning</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="moneroCount">0</div>
+                <div class="stat-label">🔒 Monero</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="signedCount">0</div>
+                <div class="stat-label">✓ Signed</div>
+            </div>
+        </div>
+
+        <div id="errorContainer"></div>
+        <div id="loadingContainer"></div>
+        <div id="metadataContainer"></div>
+
+        <div class="pagination" id="pagination" style="display: none;">
+            <button class="btn" onclick="previousPage()" id="prevBtn">← Previous</button>
+            <span class="page-info" id="pageInfo">Page 1</span>
+            <button class="btn" onclick="nextPage()" id="nextBtn">Next →</button>
+        </div>
+    </div>
+
+    <script>
+        let allMetadata = [];
+        let filteredMetadata = [];
+        let currentPage = 1;
+        const itemsPerPage = 20;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadMetadata();
+        });
+
+        async function loadMetadata() {
+            const loadingContainer = document.getElementById('loadingContainer');
+            const errorContainer = document.getElementById('errorContainer');
+            const metadataContainer = document.getElementById('metadataContainer');
+            const refreshBtn = document.getElementById('refreshBtn');
+
+            loadingContainer.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p style="color: #586069;">Loading Value4Value payment data...</p>
+                </div>
+            `;
+            errorContainer.innerHTML = '';
+            metadataContainer.innerHTML = '';
+            refreshBtn.disabled = true;
+
+            try {
+                const baseUrl = window.location.origin;
+                const response = await fetch(`${baseUrl}/api/v1/payment-metadata/list`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                allMetadata = data.items || [];
+                filteredMetadata = allMetadata;
+                currentPage = 1;
+
+                updateStats();
+                renderMetadata();
+                loadingContainer.innerHTML = '';
+            } catch (error) {
+                console.error('Error loading metadata:', error);
+                loadingContainer.innerHTML = '';
+                errorContainer.innerHTML = `
+                    <div class="error">
+                        <strong>Error loading payment metadata:</strong> ${error.message}
+                        <br><br>
+                        Make sure the API is running and accessible.
+                    </div>
+                `;
+            } finally {
+                refreshBtn.disabled = false;
+            }
+        }
+
+        function updateStats() {
+            const statsGrid = document.getElementById('statsGrid');
+            const totalCount = document.getElementById('totalCount');
+            const lightningCount = document.getElementById('lightningCount');
+            const moneroCount = document.getElementById('moneroCount');
+            const signedCount = document.getElementById('signedCount');
+
+            const lightning = allMetadata.filter(m => m.type === 'bitcoin-lightning').length;
+            const monero = allMetadata.filter(m => m.type === 'monero').length;
+            const signed = allMetadata.filter(m => m.signature).length;
+
+            totalCount.textContent = allMetadata.length;
+            lightningCount.textContent = lightning;
+            moneroCount.textContent = monero;
+            signedCount.textContent = signed;
+
+            statsGrid.style.display = allMetadata.length > 0 ? 'grid' : 'none';
+        }
+
+        function renderMetadata() {
+            const container = document.getElementById('metadataContainer');
+            const pagination = document.getElementById('pagination');
+            const pageInfo = document.getElementById('pageInfo');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (filteredMetadata.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h3>No Payment Metadata Found</h3>
+                        <p>No Value4Value payments have been recorded yet, or none match your search filters.</p>
+                        <p style="margin-top: 10px; font-size: 0.9em;">Payments from any cryptocurrency network will appear here using the unified metadata structure.</p>
+                    </div>
+                `;
+                pagination.style.display = 'none';
+                return;
+            }
+
+            const totalPages = Math.ceil(filteredMetadata.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageItems = filteredMetadata.slice(startIndex, endIndex);
+
+            container.innerHTML = `
+                <div class="metadata-table">
+                    <div class="table-header">
+                        Showing ${startIndex + 1}-${Math.min(endIndex, filteredMetadata.length)} of ${filteredMetadata.length} payments
+                    </div>
+                    ${pageItems.map((item, idx) => renderPaymentRow(item, idx)).join('')}
+                </div>
+            `;
+
+            pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+            pagination.style.display = filteredMetadata.length > itemsPerPage ? 'flex' : 'none';
+        }
+
+        function renderPaymentRow(item, index) {
+            const metadata = item.metadata || {};
+            const typeClass = item.type === 'monero' ? 'type-monero' : 'type-lightning';
+            const typeLabel = item.type === 'monero' ? '🔒 Monero' : 
+                            item.type === 'bitcoin-lightning' ? '⚡ Lightning' : 
+                            `💰 ${item.type}`;
+            
+            // Format amount from value_msat_total or value_msat
+            let amount = 'N/A';
+            if (metadata.value_msat_total) {
+                const msat = parseInt(metadata.value_msat_total);
+                amount = `${(msat / 1000).toLocaleString()} sats`;
+            } else if (metadata.value_msat) {
+                const msat = parseInt(metadata.value_msat);
+                amount = `${(msat / 1000).toLocaleString()} sats`;
+            }
+            
+            const rowId = `row-${item.id}`;
+            const detailsId = `details-${item.id}`;
+            const jsonId = `json-${item.id}`;
+
+            return `
+                <div class="payment-row">
+                    <div class="payment-header" onclick="toggleRow('${detailsId}', '${rowId}')">
+                        <span class="payment-type ${typeClass}">${typeLabel}</span>
+                        <span class="payment-id">${escapeHtml(item.id)}</span>
+                        <span class="payment-amount">${amount}</span>
+                        ${item.signature ? '<span class="signature-badge">✓ SIGNED</span>' : ''}
+                        <span class="expand-indicator" id="${rowId}-indicator">▼</span>
+                    </div>
+                    <div class="payment-details" id="${detailsId}">
+                        ${renderPaymentDetails(item, jsonId)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPaymentDetails(item, jsonId) {
+            const metadata = item.metadata || {};
+            let html = '';
+
+            if (metadata.message) {
+                html += `
+                    <div class="boost-message">
+                        <strong>💬 Boost Message:</strong><br>
+                        "${escapeHtml(metadata.message)}"
+                    </div>
+                `;
+            }
+
+            if (metadata.guid || metadata.podcast || metadata.episode_guid || metadata.episode) {
+                html += `
+                    <div class="podcast-info">
+                        <div class="podcast-info-title">🎙️ Podcast Attribution</div>
+                        ${metadata.guid ? `<div><strong>Podcast GUID:</strong> ${escapeHtml(metadata.guid)}</div>` : ''}
+                        ${metadata.podcast ? `<div><strong>Podcast:</strong> ${escapeHtml(metadata.podcast)}</div>` : ''}
+                        ${metadata.feedID ? `<div><strong>Feed ID:</strong> ${escapeHtml(String(metadata.feedID))}</div>` : ''}
+                        ${metadata.episode_guid ? `<div><strong>Episode GUID:</strong> ${escapeHtml(metadata.episode_guid)}</div>` : ''}
+                        ${metadata.episode ? `<div><strong>Episode:</strong> ${escapeHtml(metadata.episode)}</div>` : ''}
+                        ${metadata.action ? `<div><strong>Action:</strong> ${escapeHtml(metadata.action)}</div>` : ''}
+                    </div>
+                `;
+            }
+
+            html += '<div class="details-grid">';
+            
+            const fieldMap = {
+                // Podcast identification
+                'guid': 'Podcast GUID',
+                'podcast': 'Podcast Title',
+                'feedID': 'Feed ID',
+                'url': 'Feed URL',
+                // Episode identification
+                'episode': 'Episode Title',
+                'itemID': 'Item ID',
+                'episode_guid': 'Episode GUID',
+                // Time
+                'ts': 'Timestamp (seconds)',
+                'time': 'Time (HH:MM:SS)',
+                // Payment info
+                'action': 'Action',
+                'value_msat_total': 'Value Total (msat)',
+                'value_msat': 'Value (msat)',
+                // Sender info
+                'sender_name': 'Sender Name',
+                'sender_id': 'Sender ID',
+                // App info
+                'app_name': 'App Name',
+                'app_version': 'App Version',
+                // Other
+                'message': 'Message',
+                'boost_link': 'Boost Link',
+                'name': 'Name',
+                'signature': 'Signature',
+                'speed': 'Speed',
+                'boost_uuid': 'Boost UUID',
+                'uuid': 'UUID',
+                'reply_address': 'Reply Address',
+                'reply_custom_key': 'Reply Custom Key',
+                'reply_custom_value': 'Reply Custom Value',
+                'remote_feed_guid': 'Remote Feed GUID',
+                'remote_item_guid': 'Remote Item GUID'
+            };
+
+            for (const [key, label] of Object.entries(fieldMap)) {
+                if (metadata[key] !== undefined && metadata[key] !== null && metadata[key] !== '') {
+                    let value = metadata[key];
+                    if (key === 'ts' && typeof value === 'number') {
+                        const minutes = Math.floor(value / 60);
+                        const seconds = value % 60;
+                        value = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    } else if (key === 'value_msat_total' || key === 'value_msat') {
+                        const msat = parseInt(value);
+                        value = `${(msat / 1000).toLocaleString()} sats (${msat} msat)`;
+                    }
+                    html += `
+                        <div class="detail-item">
+                            <div class="detail-label">${label}</div>
+                            <div class="detail-value">${escapeHtml(String(value))}</div>
+                        </div>
+                    `;
+                }
+            }
+
+            html += '</div>';
+
+            html += `
+                <button class="json-toggle" onclick="toggleJson('${jsonId}')">
+                    View Full JSON
+                </button>
+                <div class="json-view" id="${jsonId}">
+                    <pre>${JSON.stringify(item, null, 2)}</pre>
+                </div>
+            `;
+
+            return html;
+        }
+
+        function toggleRow(detailsId, rowId) {
+            const details = document.getElementById(detailsId);
+            const indicator = document.getElementById(`${rowId}-indicator`);
+            details.classList.toggle('visible');
+            indicator.classList.toggle('expanded');
+        }
+
+        function toggleJson(jsonId) {
+            const jsonView = document.getElementById(jsonId);
+            jsonView.classList.toggle('visible');
+        }
+
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            applyFilters(searchTerm);
+        }
+
+        function applyFilters(searchTerm = null) {
+            const typeFilter = document.getElementById('typeFilter').value;
+            const search = searchTerm !== null ? searchTerm : document.getElementById('searchInput').value.toLowerCase();
+
+            filteredMetadata = allMetadata.filter(item => {
+                if (typeFilter && item.type !== typeFilter) return false;
+                if (search) {
+                    const searchStr = JSON.stringify(item).toLowerCase();
+                    if (!searchStr.includes(search)) return false;
+                }
+                return true;
+            });
+
+            currentPage = 1;
+            renderMetadata();
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredMetadata.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderMetadata();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderMetadata();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

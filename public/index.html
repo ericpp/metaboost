@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MetaBoost API Documentation</title>
+    <title>MetaBoost API v1.0 - OpenAPI Specification</title>
     <style>
         * {
             margin: 0;
@@ -12,732 +12,1049 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
             color: #24292e;
             background: #f6f8fa;
-            margin: 0;
-            padding: 0;
         }
 
-        .header {
-            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-            color: white;
-            padding: 50px 20px;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .header .version {
-            font-size: 0.9em;
-            opacity: 0.9;
-            font-weight: 500;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            background: white;
-            padding: 0;
-        }
-
-        .content {
-            padding: 50px 50px 60px;
-        }
-
-        .meta-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-            padding: 25px;
-            background: #f6f8fa;
-            border-radius: 6px;
-            border: 1px solid #e1e4e8;
-        }
-
-        .meta-item {
+        .layout {
             display: flex;
-            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .meta-label {
-            font-size: 0.85em;
-            color: #586069;
+        .sidebar {
+            width: 280px;
+            background: #24292e;
+            color: #fff;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            background: #1a1e22;
+            border-bottom: 1px solid #444d56;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.5em;
             font-weight: 600;
             margin-bottom: 5px;
         }
 
-        .meta-value {
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-            font-size: 0.95em;
-            color: #0366d6;
-        }
-
-        .nav-menu {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin: 30px 0;
-            padding: 20px;
-            background: #f6f8fa;
-            border-radius: 6px;
-            border: 1px solid #e1e4e8;
-        }
-
-        .nav-menu a {
-            color: #0366d6;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: all 0.2s;
-            font-size: 0.9em;
-        }
-
-        .nav-menu a:hover {
-            background: #0366d6;
+        .version-badge {
+            display: inline-block;
+            background: #28a745;
             color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-section {
+            margin-bottom: 20px;
+        }
+
+        .nav-section-title {
+            padding: 8px 20px;
+            font-size: 0.75em;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #959da5;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 8px 20px;
+            color: #d1d5da;
             text-decoration: none;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: #2d3338;
+            color: #fff;
+            border-left-color: #0366d6;
+        }
+
+        .nav-link.active {
+            background: #2d3338;
+            color: #58a6ff;
+            border-left-color: #58a6ff;
+            font-weight: 600;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            background: #fff;
+        }
+
+        .top-bar {
+            background: #24292e;
+            color: white;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444d56;
+        }
+
+        .base-url {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #58a6ff;
+        }
+
+        .view-data-link {
+            background: #238636;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .view-data-link:hover {
+            background: #2ea043;
+        }
+
+        .content {
+            padding: 40px;
+            max-width: 1200px;
         }
 
         h2 {
-            font-size: 1.8em;
-            margin-top: 50px;
-            margin-bottom: 20px;
+            font-size: 2em;
+            margin-top: 40px;
+            margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 2px solid #e1e4e8;
+            border-bottom: 1px solid #e1e4e8;
             color: #24292e;
-            font-weight: 600;
-            position: relative;
         }
 
-        h2:first-of-type {
+        h2:first-child {
             margin-top: 0;
         }
 
-        h2 .section-link {
-            opacity: 0;
-            color: #0366d6;
-            text-decoration: none;
-            font-size: 0.6em;
-            margin-left: 8px;
-            transition: opacity 0.2s;
-            position: absolute;
-            left: -30px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        h2:hover .section-link {
-            opacity: 1;
-        }
-
-        h2:target {
-            scroll-margin-top: 20px;
-        }
-
         h3 {
-            font-size: 1.3em;
+            font-size: 1.5em;
             margin-top: 30px;
             margin-bottom: 15px;
             color: #24292e;
-            font-weight: 600;
         }
 
-        p {
-            margin: 15px 0;
+        .description {
             color: #586069;
-        }
-
-        pre {
-            background: #f6f8fa;
-            border: 1px solid #e1e4e8;
-            border-radius: 6px;
-            padding: 16px;
-            overflow-x: auto;
-            font-size: 0.9em;
-            line-height: 1.5;
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-        }
-
-        code {
-            background: #f6f8fa;
-            padding: 3px 6px;
-            border-radius: 3px;
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-            font-size: 0.9em;
-            color: #e83e8c;
-        }
-
-        pre code {
-            background: none;
-            padding: 0;
-            color: #24292e;
+            font-size: 1.1em;
+            line-height: 1.7;
+            margin-bottom: 20px;
         }
 
         .endpoint {
-            margin: 30px 0;
-            padding: 25px;
-            border-radius: 6px;
-            background: white;
+            background: #f6f8fa;
             border: 1px solid #e1e4e8;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            border-radius: 6px;
+            margin: 30px 0;
+            overflow: hidden;
         }
 
         .endpoint-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 15px;
+            padding: 15px 20px;
+            background: #fff;
+            border-bottom: 1px solid #e1e4e8;
+            gap: 15px;
         }
 
-        .method {
-            display: inline-block;
-            padding: 4px 12px;
-            font-weight: 600;
-            font-size: 0.85em;
+        .http-method {
+            padding: 6px 12px;
             border-radius: 4px;
-            color: white;
+            font-weight: 700;
+            font-size: 0.85em;
+            font-family: 'Courier New', monospace;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
 
-        .method.post { background: #28a745; }
-        .method.get { background: #0366d6; }
-        .method.put { background: #fb8500; }
-        .method.delete { background: #d73a49; }
+        .method-post {
+            background: #49cc90;
+            color: white;
+        }
+
+        .method-get {
+            background: #61affe;
+            color: white;
+        }
+
+        .method-put {
+            background: #fca130;
+            color: white;
+        }
+
+        .method-delete {
+            background: #f93e3e;
+            color: white;
+        }
 
         .endpoint-path {
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-            font-size: 1.1em;
-            color: #24292e;
+            font-family: 'Courier New', monospace;
+            font-size: 1em;
             font-weight: 600;
-        }
-
-        .endpoint h3 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-size: 1.2em;
-        }
-
-        .endpoint strong {
-            display: block;
-            margin-top: 20px;
-            margin-bottom: 8px;
             color: #24292e;
+            flex: 1;
+        }
+
+        .endpoint-body {
+            padding: 20px;
+        }
+
+        .endpoint-description {
+            color: #586069;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .schema-section {
+            margin: 20px 0;
+        }
+
+        .schema-title {
+            font-weight: 600;
+            color: #24292e;
+            margin-bottom: 10px;
             font-size: 0.95em;
         }
 
-        table {
+        .parameter-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 25px 0;
+            margin: 15px 0;
+            background: white;
             border: 1px solid #e1e4e8;
             border-radius: 6px;
             overflow: hidden;
         }
 
-        th, td {
+        .parameter-table thead {
+            background: #f6f8fa;
+        }
+
+        .parameter-table th {
+            padding: 12px 15px;
             text-align: left;
-            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 0.85em;
+            color: #24292e;
             border-bottom: 1px solid #e1e4e8;
         }
 
-        th {
-            background: #f6f8fa;
-            font-weight: 600;
-            color: #24292e;
+        .parameter-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e1e4e8;
             font-size: 0.9em;
         }
 
-        tr:last-child td {
+        .parameter-table tr:last-child td {
             border-bottom: none;
         }
 
-        ul {
-            margin: 15px 0;
-            padding-left: 25px;
+        .param-name {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: #0366d6;
         }
 
-        li {
-            margin: 10px 0;
-            color: #586069;
+        .param-type {
+            font-family: 'Courier New', monospace;
+            color: #6f42c1;
+            font-size: 0.9em;
+        }
+
+        .required-badge {
+            background: #d73a49;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .optional-badge {
+            background: #6c757d;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .code-block {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 16px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.5;
+            color: #24292e;
+        }
+
+        .json-example {
+            background: #24292e;
+            border-radius: 6px;
+            padding: 16px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .json-example pre {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            line-height: 1.6;
+            color: #f6f8fa;
+        }
+
+        .response-code {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-right: 10px;
         }
 
         .info-box {
-            background: #eff6ff;
+            background: #e1f0ff;
             border-left: 4px solid #0366d6;
-            padding: 20px;
-            margin: 25px 0;
-            border-radius: 6px;
-        }
-
-        .info-box strong {
-            color: #0366d6;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        a {
-            color: #0366d6;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .token-example {
-            word-break: break-all;
-            background: #fff8dc;
-            padding: 16px;
-            border: 1px solid #f1e05a;
-            border-radius: 6px;
-            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
-            font-size: 0.85em;
+            padding: 15px 20px;
             margin: 20px 0;
-            color: #6a4c00;
+            border-radius: 4px;
         }
 
-        .resources {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
+        .warning-box {
+            background: #fffbdd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
         }
 
-        .resource-card {
-            padding: 20px;
+        .schema-object {
+            background: white;
             border: 1px solid #e1e4e8;
             border-radius: 6px;
-            background: #f6f8fa;
-            transition: all 0.2s;
+            padding: 20px;
+            margin: 15px 0;
         }
 
-        .resource-card:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transform: translateY(-2px);
+        .schema-property {
+            padding: 10px 0;
+            border-bottom: 1px solid #e1e4e8;
         }
 
-        .resource-card a {
+        .schema-property:last-child {
+            border-bottom: none;
+        }
+
+        .property-name {
+            font-family: 'Courier New', monospace;
             font-weight: 600;
-            font-size: 1.05em;
+            color: #0366d6;
+            margin-right: 10px;
+        }
+
+        .property-type {
+            font-family: 'Courier New', monospace;
+            color: #6f42c1;
+            font-size: 0.9em;
+        }
+
+        .property-description {
+            color: #586069;
+            margin-top: 5px;
+            font-size: 0.9em;
         }
 
         footer {
-            background: #24292e;
-            color: #959da5;
+            background: #f6f8fa;
+            border-top: 1px solid #e1e4e8;
+            padding: 30px 40px;
+            color: #586069;
             text-align: center;
-            padding: 40px 20px;
-            margin-top: 0;
-        }
-
-        footer p {
-            margin: 8px 0;
-            color: #959da5;
         }
 
         footer a {
-            color: #58a6ff;
+            color: #0366d6;
+            text-decoration: none;
         }
 
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8em;
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-280px);
+                transition: transform 0.3s ease;
             }
-            
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
             .content {
-                padding: 30px 20px;
-            }
-
-            .endpoint {
                 padding: 20px;
-            }
-
-            .meta-info {
-                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>MetaBoost API</h1>
-    </div>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>MetaBoost API</h1>
+                <span class="version-badge">v1.0</span>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Overview</div>
+                    <a href="#introduction" class="nav-link">Introduction</a>
+                    <a href="#base-url" class="nav-link">Base URL</a>
+                    <a href="#authentication" class="nav-link">Authentication</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Endpoints</div>
+                    <a href="#create-metadata" class="nav-link">Create Metadata</a>
+                    <a href="#get-metadata" class="nav-link">Get Metadata</a>
+                    <a href="#list-metadata" class="nav-link">List Metadata</a>
+                    <a href="#find-by-episode" class="nav-link">Find by Episode</a>
+                    <a href="#update-metadata" class="nav-link">Update Metadata</a>
+                    <a href="#delete-metadata" class="nav-link">Delete Metadata</a>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-section-title">Schemas</div>
+                    <a href="#payment-metadata" class="nav-link">PaymentMetadata</a>
+                    <a href="#metadata-object" class="nav-link">Metadata Object</a>
+                    <a href="#signatures" class="nav-link">Signatures</a>
+                </div>
+            </nav>
+        </aside>
 
-    <div class="container">
-        <div class="content">
-
-            <div class="nav-menu">
-                <a href="#overview">Overview</a>
-                <a href="#storage">Storage</a>
-                <a href="#endpoints">Endpoints</a>
-                <a href="#payment-types">Payment Types</a>
-                <a href="#jpt-structure">JPT Structure</a>
-                <a href="#building-jpt">Building JPTs</a>
-                <a href="#examples">Examples</a>
-                <a href="#security">Security</a>
-                <a href="/payments.html" style="background: #28a745; color: white;">View Received Metadata</a>
+        <main class="main-content">
+            <div class="top-bar">
+                <div class="base-url">https://metaboost.vercel.app/api/v1</div>
+                <a href="metadata-viewer.html" class="view-data-link">📊 View Metadata</a>
             </div>
 
-            <h2 id="overview">Overview<a href="#overview" class="section-link">§</a></h2>
-        <p>
-            MetaBoost is a RESTful API for storing and retrieving payment metadata using JSON Payment Tokens (JPTs).
-            JPTs provide cryptographically-verifiable proof of payment across different blockchain networks.
-        </p>
+            <div class="content">
+                <section id="introduction">
+                    <h2>MetaBoost API Specification</h2>
+                    <p class="description">
+                        MetaBoost provides a cryptocurrency-agnostic REST API for storing and retrieving Value4Value payment 
+                        metadata for podcast applications. Store payment data from any cryptocurrency network (Bitcoin Lightning, 
+                        Monero, or others) using a flexible, unified metadata structure.
+                    </p>
+                    <div class="info-box">
+                        <strong>Value4Value Model:</strong> This API is designed for the podcast Value4Value ecosystem, 
+                        where listeners support creators directly through cryptocurrency payments. The metadata structure 
+                        is flexible and payment-type agnostic - use the same schema regardless of which cryptocurrency 
+                        network processed the payment. Store boost messages, sender information, payment amounts, and 
+                        episode attribution.
+                    </div>
+                </section>
 
-        <div class="info-box">
-            <strong>JSON Payment Token (JPT) Structure:</strong><br>
-            Format: <code>header.payload.signature</code> (base64url encoded)<br>
-            Similar to JWT but designed for payment verification instead of authentication.
-        </div>
+                <section id="base-url">
+                    <h3>Base URL</h3>
+                    <div class="code-block">
+                        <pre>https://metaboost.vercel.app/api/v1</pre>
+                    </div>
+                </section>
 
-        <h2 id="storage">Storage Backend<a href="#storage" class="section-link">§</a></h2>
-        <ul>
-            <li>Redis (key-value database)</li>
-            <li>Primary key: <code>payment:{uuid}</code></li>
-            <li>Index: <code>rss-index:{podcastGuid}:{rssItemGuid}</code> → Set of payment IDs</li>
-            <li>Environment variable: <code>REDIS_URL</code></li>
-        </ul>
+                <section id="authentication">
+                    <h3>Authentication</h3>
+                    <p class="description">
+                        Most endpoints require no authentication. Update and delete operations require an 
+                        <code class="param-name">updateToken</code> that is returned when creating metadata.
+                    </p>
+                    <div class="warning-box">
+                        <strong>⚠️ Security Note:</strong> Store the <code class="param-name">updateToken</code> securely. 
+                        Anyone with this token can modify or delete your payment metadata.
+                    </div>
+                </section>
 
-        <h2 id="endpoints">API Endpoints<a href="#endpoints" class="section-link">§</a></h2>
+                <section id="create-metadata">
+                    <h2>Endpoints</h2>
+                    
+                    <div class="endpoint">
+                        <div class="endpoint-header">
+                            <span class="http-method method-post">POST</span>
+                            <span class="endpoint-path">/api/v1/payment-metadata</span>
+                        </div>
+                        <div class="endpoint-body">
+                            <p class="endpoint-description">
+                                Create new payment metadata for a Value4Value transaction. Store payment information from any 
+                                cryptocurrency network using a flexible metadata structure. Include amount, sender, boost message, 
+                                and podcast episode attribution.
+                            </p>
 
-        <div class="endpoint">
-            <div class="endpoint-header">
-                <span class="method post">POST</span>
-                <span class="endpoint-path">/payment-metadata</span>
-            </div>
-            
-            <h3>Create Payment Metadata</h3>
-            <p>Store a new JPT with optional RSS item associations.</p>
-            
-            <strong>Request Body:</strong>
-            <pre>{
-  "jpt": "eyJhbGci...",           // string or object (JPT)
-  "type": "bitcoin-lightning",    // "bitcoin-lightning" | "monero"
-  "podcastGuid": "uuid",          // optional
-  "rssItemGuid": "string"         // optional
-}</pre>
+                            <div class="schema-section">
+                                <div class="schema-title">Request Body <span class="required-badge">REQUIRED</span></div>
+                                
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Field</th>
+                                            <th>Type</th>
+                                            <th>Required</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="param-name">type</span></td>
+                                            <td><span class="param-type">string</span></td>
+                                            <td>✓</td>
+                                            <td>Payment network identifier: "bitcoin-lightning", "monero", or any cryptocurrency</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="param-name">metadata</span></td>
+                                            <td><span class="param-type">object</span></td>
+                                            <td>✓</td>
+                                            <td>bLIP-0010 metadata object containing Value4Value payment details - same structure for all payment types</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="param-name">signature</span></td>
+                                            <td><span class="param-type">string</span></td>
+                                            <td></td>
+                                            <td>Optional cryptographic signature for the entire payment metadata (hex encoded)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
-            <strong>Response (200):</strong>
-            <pre>{
-  "id": "uuid",
-  "updateToken": "uuid"
-}</pre>
-
-            <strong>Errors:</strong> 400 (Invalid input), 422 (Validation exception)
-        </div>
-
-        <div class="endpoint">
-            <div class="endpoint-header">
-                <span class="method get">GET</span>
-                <span class="endpoint-path">/payment-metadata/{id}</span>
-            </div>
-            
-            <h3>Get Payment Metadata by ID</h3>
-            <p>Retrieve a specific payment metadata entry.</p>
-            
-            <strong>Path Parameters:</strong>
-            <ul>
-                <li><code>id</code> - UUID of payment metadata</li>
-            </ul>
-
-            <strong>Response (200):</strong>
-            <pre>{
-  "id": "uuid",
-  "jpt": "eyJhbGci...",
+                            <div class="schema-section">
+                                <div class="schema-title">Example: Value4Value Boost Payment</div>
+                                <div class="json-example">
+<pre>{
   "type": "bitcoin-lightning",
-  "podcastGuid": "uuid",
-  "rssItemGuid": "string"
+  "metadata": {
+    "guid": "9b024349-ccf0-5f69-a609-6b82873eab3c",
+    "podcast": "Mere Mortals",
+    "feedID": 1844352,
+    "episode": "The Art Of NFT's & Aimless Wandering",
+    "episode_guid": "Buzzsprout-9931017",
+    "action": "boost",
+    "ts": 574,
+    "app_name": "Fountain",
+    "sender_name": "Alice",
+    "sender_id": "nSiq7id78JAdH9uY1pIy",
+    "value_msat_total": 100000,
+    "message": "Great episode on Value4Value!"
+  },
+  "signature": "f1e2d3c4b5a6789012345678901234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef5678"
 }</pre>
+                                </div>
+                                <p class="endpoint-description" style="margin-top: 15px;">
+                                    <strong>Note:</strong> The metadata structure follows <strong>bLIP-0010</strong> and is the same for all payment types. 
+                                    Use <code>type</code> to indicate the cryptocurrency network (bitcoin-lightning, monero, etc.), 
+                                    and populate the metadata fields according to the <a href="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/examples/value/blip-0010.md" target="_blank" style="color: #0366d6; text-decoration: underline;">bLIP-0010 specification</a>.
+                                </p>
+                            </div>
 
-            <strong>Errors:</strong> 400 (Invalid ID), 404 (Not found)
-        </div>
+                            <div class="schema-section">
+                                <div class="schema-title">Response <span class="response-code">201</span></div>
+                                <div class="json-example">
+<pre>{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "updateToken": "7c9e6679-7425-40de-944b-e07fc1f90ae7"
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <div class="endpoint">
-            <div class="endpoint-header">
-                <span class="method get">GET</span>
-                <span class="endpoint-path">/payment-metadata/findByRSSItem</span>
+                    <div class="endpoint" id="get-metadata">
+                        <div class="endpoint-header">
+                            <span class="http-method method-get">GET</span>
+                            <span class="endpoint-path">/api/v1/payment-metadata/{id}</span>
+                        </div>
+                        <div class="endpoint-body">
+                            <p class="endpoint-description">
+                                Retrieve payment metadata by its unique identifier.
+                            </p>
+
+                            <div class="schema-section">
+                                <div class="schema-title">Path Parameters</div>
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parameter</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="param-name">id</span></td>
+                                            <td><span class="param-type">string</span></td>
+                                            <td>UUID of the payment metadata</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="schema-section">
+                                <div class="schema-title">Response <span class="response-code">200</span></div>
+                                <div class="json-example">
+<pre>{
+  "id": "550e8400-e29b-41d4-a716-446655440000",
+  "type": "bitcoin-lightning",
+  "metadata": {
+    "guid": "9b024349-ccf0-5f69-a609-6b82873eab3c",
+    "podcast": "Mere Mortals",
+    "feedID": 1844352,
+    "episode": "The Art Of NFT's & Aimless Wandering",
+    "episode_guid": "Buzzsprout-9931017",
+    "action": "boost",
+    "ts": 574,
+    "app_name": "Fountain",
+    "sender_name": "Alice",
+    "value_msat_total": 100000,
+    "message": "Great episode!"
+  },
+  "signature": "f1e2d3c4b5a6789012345678901234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef5678"
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="endpoint" id="list-metadata">
+                        <div class="endpoint-header">
+                            <span class="http-method method-get">GET</span>
+                            <span class="endpoint-path">/api/v1/payment-metadata/list</span>
+                        </div>
+                        <div class="endpoint-body">
+                            <p class="endpoint-description">
+                                List all payment metadata with pagination support.
+                            </p>
+
+                            <div class="schema-section">
+                                <div class="schema-title">Query Parameters</div>
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parameter</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="param-name">cursor</span></td>
+                                            <td><span class="param-type">string</span></td>
+                                            <td>Pagination cursor for next page</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="param-name">limit</span></td>
+                                            <td><span class="param-type">number</span></td>
+                                            <td>Number of items per page (default: 100, max: 1000)</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="schema-section">
+                                <div class="schema-title">Response <span class="response-code">200</span></div>
+                                <div class="json-example">
+<pre>{
+  "items": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "type": "bitcoin-lightning",
+      "metadata": { ... },
+      "podcastGuid": "...",
+      "rssItemGuid": "..."
+    }
+  ],
+  "cursor": "next-page-cursor",
+  "hasMore": true
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="endpoint" id="find-by-episode">
+                        <div class="endpoint-header">
+                            <span class="http-method method-get">GET</span>
+                            <span class="endpoint-path">/api/v1/payment-metadata/findByRSSItem</span>
+                        </div>
+                        <div class="endpoint-body">
+                            <p class="endpoint-description">
+                                Find all payment metadata for a specific podcast episode. Use this to display all 
+                                boosts and payments received for an episode.
+                            </p>
+
+                            <div class="schema-section">
+                                <div class="schema-title">Query Parameters</div>
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parameter</th>
+                                            <th>Type</th>
+                                            <th>Required</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="param-name">podcastGuid</span></td>
+                                            <td><span class="param-type">string</span></td>
+                                            <td>✓</td>
+                                            <td>Podcast GUID</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="param-name">rssItemGuid</span></td>
+                                            <td><span class="param-type">string</span></td>
+                                            <td>✓</td>
+                                            <td>Episode GUID</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="schema-section">
+                                <div class="schema-title">Example Request</div>
+                                <div class="code-block">
+<pre>GET /api/v1/payment-metadata/findByRSSItem?podcastGuid=9b024349-ccf0-5f69-a609-6b82873eab3c&rssItemGuid=episode-123</pre>
+                                </div>
+                            </div>
+
+                            <div class="schema-section">
+                                <div class="schema-title">Response <span class="response-code">200</span></div>
+                                <div class="json-example">
+<pre>{
+  "items": [
+    {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "type": "bitcoin-lightning",
+      "metadata": {
+        "guid": "9b024349-ccf0-5f69-a609-6b82873eab3c",
+        "episode_guid": "Buzzsprout-9931017",
+        "action": "boost",
+        "value_msat_total": 100000,
+        "message": "Great episode!",
+        "sender_name": "Alice",
+        "app_name": "Fountain"
+      },
+      "signature": "f1e2d3c4b5a6789012345678901234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef5678"
+    }
+  ]
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="endpoint" id="update-metadata">
+                        <div class="endpoint-header">
+                            <span class="http-method method-put">PUT</span>
+                            <span class="endpoint-path">/api/v1/payment-metadata?updateToken={token}</span>
+                        </div>
+                        <div class="endpoint-body">
+                            <p class="endpoint-description">
+                                Update existing payment metadata. Requires the updateToken returned during creation.
+                            </p>
+
+                            <div class="schema-section">
+                                <div class="schema-title">Query Parameters</div>
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parameter</th>
+                                            <th>Type</th>
+                                            <th>Required</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="param-name">updateToken</span></td>
+                                            <td><span class="param-type">string</span></td>
+                                            <td>✓</td>
+                                            <td>Update token from creation response</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="schema-section">
+                                <div class="schema-title">Response <span class="response-code">200</span></div>
+                                <div class="json-example">
+<pre>{
+  "success": true
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="endpoint" id="delete-metadata">
+                        <div class="endpoint-header">
+                            <span class="http-method method-delete">DELETE</span>
+                            <span class="endpoint-path">/api/v1/payment-metadata/{id}?updateToken={token}</span>
+                        </div>
+                        <div class="endpoint-body">
+                            <p class="endpoint-description">
+                                Delete payment metadata. Requires the updateToken returned during creation.
+                            </p>
+
+                            <div class="schema-section">
+                                <div class="schema-title">Path Parameters</div>
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parameter</th>
+                                            <th>Type</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="param-name">id</span></td>
+                                            <td><span class="param-type">string</span></td>
+                                            <td>UUID of the payment metadata</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="schema-section">
+                                <div class="schema-title">Query Parameters</div>
+                                <table class="parameter-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Parameter</th>
+                                            <th>Type</th>
+                                            <th>Required</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="param-name">updateToken</span></td>
+                                            <td><span class="param-type">string</span></td>
+                                            <td>✓</td>
+                                            <td>Update token from creation response</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="schema-section">
+                                <div class="schema-title">Response <span class="response-code">200</span></div>
+                                <div class="json-example">
+<pre>{
+  "success": true
+}</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="payment-metadata">
+                    <h2>Schemas</h2>
+                    
+                    <h3>PaymentMetadata</h3>
+                    <div class="schema-object">
+                        <div class="schema-property">
+                            <div>
+                                <span class="property-name">id</span>
+                                <span class="property-type">string (uuid)</span>
+                                <span class="required-badge">REQUIRED</span>
+                            </div>
+                            <div class="property-description">Unique identifier for the payment metadata</div>
+                        </div>
+                        <div class="schema-property">
+                            <div>
+                                <span class="property-name">type</span>
+                                <span class="property-type">string</span>
+                                <span class="required-badge">REQUIRED</span>
+                            </div>
+                            <div class="property-description">Payment network identifier. Common values: "bitcoin-lightning", "monero", or any cryptocurrency name</div>
+                        </div>
+                        <div class="schema-property">
+                            <div>
+                                <span class="property-name">metadata</span>
+                                <span class="property-type">object</span>
+                                <span class="required-badge">REQUIRED</span>
+                            </div>
+                            <div class="property-description">bLIP-0010 metadata object containing Value4Value payment details - same structure for all payment types</div>
+                        </div>
+                        <div class="schema-property">
+                            <div>
+                                <span class="property-name">signature</span>
+                                <span class="property-type">string</span>
+                                <span class="optional-badge">OPTIONAL</span>
+                            </div>
+                            <div class="property-description">Cryptographic signature for the entire payment metadata (hex encoded)</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="metadata-object">
+                    <h3>Metadata Object (bLIP-0010)</h3>
+                    <p class="description">
+                        The metadata object follows the <strong>bLIP-0010</strong> specification for Value4Value payment metadata. 
+                        This is a <strong>unified, payment-agnostic structure</strong> that works the same way for Lightning, Monero, 
+                        or any other cryptocurrency network. The <code>type</code> field indicates which network was used, but the 
+                        metadata fields remain consistent across all payment types.
+                    </p>
+                    
+                    <div class="info-box">
+                        <strong>Based on bLIP-0010:</strong> This API stores the same metadata fields that are used in Lightning TLV 
+                        records for Value4Value payments. The structure is cryptocurrency-agnostic and works identically regardless 
+                        of which payment network processes the transaction. See the <a href="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/examples/value/blip-0010.md" target="_blank" style="color: #0366d6; text-decoration: underline;">bLIP-0010 specification</a> for complete field documentation.
+                    </div>
+
+                    <h4>Metadata Fields</h4>
+                    <p class="description" style="margin-bottom: 15px;">
+                        The metadata structure follows the <strong>bLIP-0010</strong> specification for Value4Value payment metadata. 
+                        These fields are cryptocurrency-agnostic and work the same way for Lightning, Monero, or any other payment network.
+                    </p>
+                    
+                    <div class="info-box">
+                        <strong>📖 Full Specification:</strong> See the complete <a href="https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/examples/value/blip-0010.md" target="_blank" style="color: #0366d6; text-decoration: underline;">bLIP-0010 documentation</a> for all available fields, their types, and usage requirements.
+                    </div>
+
+                    <h4>Example: Boost Payment (Lightning)</h4>
+                    <div class="json-example">
+<pre>{
+  "type": "bitcoin-lightning",
+  "metadata": {
+    "guid": "9b024349-ccf0-5f69-a609-6b82873eab3c",
+    "podcast": "Mere Mortals",
+    "feedID": 1844352,
+    "episode": "The Art Of NFT's & Aimless Wandering",
+    "episode_guid": "Buzzsprout-9931017",
+    "action": "boost",
+    "ts": 574,
+    "app_name": "Fountain",
+    "sender_name": "Alice",
+    "sender_id": "nSiq7id78JAdH9uY1pIy",
+    "value_msat_total": 100000,
+    "message": "Love this episode!",
+    "boost_link": "https://fountain.fm/episode/14934154309"
+  },
+  "signature": "f1e2d3c4b5a6789012345678901234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef5678"
+}</pre>
+                    </div>
+
+                    <h4>Example: Stream Payment (Monero)</h4>
+                    <div class="json-example">
+<pre>{
+  "type": "monero",
+  "metadata": {
+    "guid": "9b024349-ccf0-5f69-a609-6b82873eab3c",
+    "podcast": "Mere Mortals",
+    "feedID": 1844352,
+    "episode": "The Art Of NFT's & Aimless Wandering",
+    "episode_guid": "Buzzsprout-9931017",
+    "action": "stream",
+    "ts": 1200,
+    "app_name": "Podverse",
+    "sender_name": "Bob",
+    "value_msat_total": 50000,
+    "speed": "1.5"
+  },
+  "signature": "e2f3a4b5c6d789012345678901234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef6789"
+}</pre>
+                    </div>
+
+                    <div class="warning-box">
+                        <strong>Flexible Structure:</strong> You can add any custom fields relevant to your application. 
+                        The API does not enforce a strict schema, but using consistent field names across payment types 
+                        makes your data easier to query and display.
+                    </div>
+                </section>
+
+                <section id="signatures">
+                    <h3>Cryptographic Signatures</h3>
+                    <p class="description">
+                        Optionally sign payment metadata to prove authenticity. The API stores signatures but 
+                        does NOT verify them - verification is the responsibility of the receiving application.
+                    </p>
+
+                    <div class="warning-box">
+                        <strong>⚠️ Critical:</strong> JSON field order affects signatures! You MUST canonicalize 
+                        (sort keys alphabetically) before signing/verifying.
+                    </div>
+
+                    <h4>Signing Process</h4>
+                    <ol style="margin: 15px 0; padding-left: 25px;">
+                        <li>Canonicalize the metadata JSON (sorted keys, no whitespace)</li>
+                        <li>Hash the canonical string (e.g., SHA-256)</li>
+                        <li>Sign the hash with your private key (secp256k1, ed25519, etc.)</li>
+                        <li>Encode signature as hex string</li>
+                    </ol>
+
+                    <h4>Example: Canonical JSON</h4>
+                    <div class="json-example">
+<pre>// JavaScript canonicalization function
+function canonicalizeJSON(obj) {
+  if (obj === null) return 'null';
+  if (typeof obj !== 'object') return JSON.stringify(obj);
+  if (Array.isArray(obj)) {
+    return '[' + obj.map(canonicalizeJSON).join(',') + ']';
+  }
+  
+  // Sort keys alphabetically
+  const sortedKeys = Object.keys(obj).sort();
+  const pairs = sortedKeys.map(key => {
+    return '"' + key + '":' + canonicalizeJSON(obj[key]);
+  });
+  return '{' + pairs.join(',') + '}';
+}</pre>
+                    </div>
+                </section>
             </div>
-            
-            <h3>Find Payment Metadata by RSS Item</h3>
-            <p>Query all payments associated with a podcast episode.</p>
-            
-            <strong>Query Parameters:</strong>
-            <ul>
-                <li><code>podcastGuid</code> - UUID from RSS &lt;podcast:guid&gt; tag (required)</li>
-                <li><code>rssItemGuid</code> - RSS item GUID (required)</li>
-            </ul>
 
-            <strong>Response (200):</strong> Array of PaymentMetadata objects
-            
-            <strong>Errors:</strong> 400 (Missing params), 404 (No results)
-        </div>
-
-        <div class="endpoint">
-            <div class="endpoint-header">
-                <span class="method put">PUT</span>
-                <span class="endpoint-path">/payment-metadata</span>
-            </div>
-            
-            <h3>Update Payment Metadata</h3>
-            <p>Update existing payment metadata. Requires updateToken for authorization.</p>
-            
-            <strong>Query Parameters:</strong>
-            <ul>
-                <li><code>updateToken</code> - UUID from create/update response (required)</li>
-            </ul>
-
-            <strong>Request Body:</strong>
-            <pre>{
-  "id": "uuid",
-  "updateToken": "uuid",
-  "jpt": "eyJhbGci...",
-  "type": "bitcoin-lightning"
-}</pre>
-
-            <strong>Response (200):</strong> New id and updateToken
-            
-            <strong>Errors:</strong> 400 (Invalid token), 404 (Not found), 422 (Validation error)
-        </div>
-
-        <div class="endpoint">
-            <div class="endpoint-header">
-                <span class="method delete">DELETE</span>
-                <span class="endpoint-path">/payment-metadata/{id}</span>
-            </div>
-            
-            <h3>Delete Payment Metadata</h3>
-            <p>Permanently remove payment metadata. Requires updateToken for authorization.</p>
-            
-            <strong>Path Parameters:</strong>
-            <ul>
-                <li><code>id</code> - UUID of payment metadata</li>
-            </ul>
-
-            <strong>Query Parameters:</strong>
-            <ul>
-                <li><code>updateToken</code> - UUID from create/update response (required)</li>
-            </ul>
-
-            <strong>Response (201):</strong> Success message
-            
-            <strong>Errors:</strong> 400 (Invalid ID/token), 404 (Not found)
-        </div>
-
-        <h2 id="payment-types">Payment Types<a href="#payment-types" class="section-link">§</a></h2>
-        <table>
-            <tr>
-                <th>Type</th>
-                <th>Description</th>
-                <th>JPT Algorithm</th>
-            </tr>
-            <tr>
-                <td><code>bitcoin-lightning</code></td>
-                <td>Bitcoin Lightning Network</td>
-                <td>lightning-keysend</td>
-            </tr>
-            <tr>
-                <td><code>monero</code></td>
-                <td>Monero cryptocurrency</td>
-                <td>monero-transaction</td>
-            </tr>
-        </table>
-
-        <h2 id="jpt-structure">JPT Structure<a href="#jpt-structure" class="section-link">§</a></h2>
-        
-        <h3>Header</h3>
-        <pre>{
-  "alg": "lightning-keysend",  // Payment method identifier
-  "typ": "JPT"                 // Token type
-}</pre>
-
-        <h3>Payload (Lightning Example)</h3>
-        <pre>{
-  "aud": "receiver_pubkey",       // Receiver's Lightning public key
-  "iss": "sender_pubkey",         // Sender's Lightning public key
-  "iat": 1647906111,              // Issued at (unix timestamp)
-  "exp": 1647992511,              // Expiration (optional)
-  "resolve_time": 1647891435,     // Payment resolved time
-  "amt_paid_msat": "100000",      // Amount in millisatoshis
-  "payment_hash": "hex_string",   // Payment hash for verification
-  "preimage": "hex_string"        // Payment preimage (optional)
-}</pre>
-
-        <h3>Complete JPT Example</h3>
-        <div class="token-example">
-eyJhbGciOiJsaWdodG5pbmcta2V5c2VuZCIsInR5cCI6IkpQVCJ9.eyJhdWQiOiIwMzJmNGZmYmJhZmZmYmU1MTcyNmFkM2MxNjRhM2QwZDM3ZWMyN2JjNjdiMjlhMTU5YjBmNDlhZThhYzIxYjg1MDgiLCJpc3MiOiIwMmI2NmQ3Y2FhZTFhY2I1MWE5NWUwMzZmYzEyYjFlNjgzN2Q5MTQzMTQxZmNmZjUyMDg3NmIwNGI5ZDgyZjM2ZDEiLCJpYXQiOjE2NDc5MDYxMTEsInJlc29sdmVfdGltZSI6MTY0Nzg5MTQzNSwiYW10X3BhaWRfbXNhdCI6IjEwMDAwMCIsInBheW1lbnRfaGFzaCI6ImQ4N2JkZWU2ZjllNGQzZjAwZjA5YzlhZDI5ZDYxZDM0NDA1YmI0Y2ZlNjRmYzA0OTBiMjZlNTEwNWQ3YWNlYTcifQ.d6o1uw865o1qpoubc5o1d9zmtooahoqkegokjogpoqt3zdquau6m1z1dyqcyypehz8i8k7bn5bfnm4sckrd7679nmqbmnk1559jx937r
-        </div>
-
-        <h2 id="building-jpt">Building JPTs<a href="#building-jpt" class="section-link">§</a></h2>
-        
-        <p>Creating a JPT involves three steps: building the header, creating the payload, and generating the signature.</p>
-
-        <h3>Step 1: Create Header</h3>
-        <pre>const header = {
-  "alg": "lightning-keysend",  // or "monero-transaction", etc.
-  "typ": "JPT"
-};</pre>
-
-        <h3>Step 2: Build Payload</h3>
-        <p>Payload contains payment-specific information. Here are examples for different payment types:</p>
-
-        <h4>Lightning Network JPT</h4>
-        <pre>const payload = {
-  "aud": "032f4ffbbafffbe51726ad3c164a3d0d37ec27bc67b29a159b0f49ae8ac21b8508", // Receiver pubkey
-  "iss": "02b66d7caae1acb51a95e036fc12b1e6837d9143141fcff520876b04b9d82f36d1", // Sender pubkey
-  "iat": Math.floor(Date.now() / 1000),                    // Current timestamp
-  "exp": Math.floor(Date.now() / 1000) + 86400,           // 24 hours from now
-  "resolve_time": 1647891435,                              // When payment was resolved
-  "amt_paid_msat": "100000",                              // Amount in millisatoshis
-  "payment_hash": "d87bdee6f9e4d3f00f09c9ad29d61d34405bb4cfe64fc0490b26e5105d7acea7",
-  "preimage": "optional_preimage_hex"                     // Optional
-};</pre>
-
-        <h4>Monero JPT</h4>
-        <pre>const payload = {
-  "aud": "recipient_address",                              // Recipient Monero address
-  "iss": "sender_address",                                // Sender Monero address
-  "iat": Math.floor(Date.now() / 1000),                   // Current timestamp
-  "exp": Math.floor(Date.now() / 1000) + 86400,          // 24 hours from now
-  "tx_hash": "a7ea7d5015e5620b49c04fe6cfb45b40341d6d92adc9090ff0d3e4f9e6ed7bd8",
-  "tx_key": "transaction_key_for_verification",
-  "amount": "1000000000000",                              // Amount in atomic units
-  "confirmations": 10                                      // Number of confirmations
-};</pre>
-
-        <h3>Step 3: Generate Signature</h3>
-        <p>The signature is created by signing the concatenated header and payload with the sender's private key.</p>
-
-        <h4>JavaScript Example</h4>
-        <pre>// 1. Encode header and payload to base64url
-const headerB64 = base64urlEncode(JSON.stringify(header));
-const payloadB64 = base64urlEncode(JSON.stringify(payload));
-
-// 2. Create message to sign
-const message = `${headerB64}.${payloadB64}`;
-
-// 3. Sign with sender's private key (method depends on payment network)
-const signature = await signMessage(message, senderPrivateKey);
-
-// 4. Create final JPT
-const jpt = `${headerB64}.${payloadB64}.${signature}`;</pre>
-
-        <h4>Lightning Network Example (Node.js)</h4>
-        <pre>const { createHash, createSign } = require('crypto');
-
-// Using Lightning node's signing capability
-async function createLightningJPT(paymentData) {
-  const header = {
-    "alg": "lightning-keysend",
-    "typ": "JPT"
-  };
-  
-  const payload = {
-    "aud": paymentData.receiverPubkey,
-    "iss": paymentData.senderPubkey,
-    "iat": Math.floor(Date.now() / 1000),
-    "resolve_time": paymentData.resolveTime,
-    "amt_paid_msat": paymentData.amountMsat,
-    "payment_hash": paymentData.paymentHash
-  };
-  
-  // Encode to base64url
-  const headerB64 = base64urlEncode(JSON.stringify(header));
-  const payloadB64 = base64urlEncode(JSON.stringify(payload));
-  const message = `${headerB64}.${payloadB64}`;
-  
-  // Sign with Lightning node (this would use your Lightning node's API)
-  const signature = await lightningNode.signMessage(message);
-  
-  return `${headerB64}.${payloadB64}.${signature}`;
-}</pre>
-
-        <h3>Base64URL Encoding</h3>
-        <p>JPTs use base64url encoding (URL-safe base64 without padding):</p>
-        <pre>function base64urlEncode(str) {
-  return Buffer.from(str)
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
-}
-
-function base64urlDecode(str) {
-  const base64 = str.replace(/-/g, '+').replace(/_/g, '/');
-  const padding = '='.repeat((4 - (base64.length % 4)) % 4);
-  return Buffer.from(base64 + padding, 'base64').toString('utf8');
-}</pre>
-
-        <h3>Validation Requirements</h3>
-        <ul>
-            <li><strong>Header:</strong> Must contain <code>alg</code> and <code>typ: "JPT"</code></li>
-            <li><strong>Payload:</strong> Must include <code>iat</code> (issued at timestamp)</li>
-            <li><strong>Expiration:</strong> If <code>exp</code> is present, it must be in the future</li>
-            <li><strong>Payment-specific:</strong> Required fields vary by payment type</li>
-            <li><strong>Signature:</strong> Must be valid for the message and sender's public key</li>
-        </ul>
-
-        <div class="info-box">
-            <strong>Important:</strong> Always verify signatures using the appropriate payment network tools 
-            (Lightning node, Monero wallet, etc.) before trusting a JPT. The MetaBoost API only validates 
-            structure, not cryptographic authenticity.
-        </div>
-
-        <h2 id="examples">Example Usage<a href="#examples" class="section-link">§</a></h2>
-
-        <h3>Create Payment Metadata</h3>
-        <pre>curl -X POST /payment-metadata \
-  -H "Content-Type: application/json" \
-  -d '{
-    "jpt": "eyJhbGci...",
-    "type": "bitcoin-lightning",
-    "podcastGuid": "123e4567-e89b-12d3-a456-426614174000",
-    "rssItemGuid": "episode-001"
-  }'</pre>
-
-        <h3>Query by RSS Item</h3>
-        <pre>curl "/payment-metadata/findByRSSItem?podcastGuid=123e4567-e89b-12d3-a456-426614174000&rssItemGuid=episode-001"</pre>
-
-        <h3>Get by ID</h3>
-        <pre>curl "/payment-metadata/0ce03790-b2b4-47da-9401-5e587d1deac8"</pre>
-
-        <h3>Update Metadata</h3>
-        <pre>curl -X PUT "/payment-metadata?updateToken=uuid" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "id": "uuid",
-    "updateToken": "uuid",
-    "jpt": "eyJhbGci...",
-    "type": "bitcoin-lightning"
-  }'</pre>
-
-        <h3>Delete Metadata</h3>
-        <pre>curl -X DELETE "/payment-metadata/uuid?updateToken=uuid"</pre>
-
-        <h2 id="security">Security Notes<a href="#security" class="section-link">§</a></h2>
-        <ul>
-            <li>Signature verification must be done by payment network (Lightning node, etc.)</li>
-            <li>updateToken required for all write/delete operations</li>
-            <li>updateToken rotates on each successful update</li>
-            <li>All UUIDs validated for proper format</li>
-            <li>JPT expiration checked if <code>exp</code> claim present</li>
-        </ul>
-
-        </div>
+            <footer>
+                <p>Based on the Alecks Gates's <a href="https://github.com/Podcastindex-org/podcast-namespace/discussions/676">metaBoost proposal</a>.</p>
+            </footer>
+        </main>
     </div>
-
-    <footer>
-        <p>Based on the <a href="https://github.com/Podcastindex-org/podcast-namespace/discussions/676">podcast:metaBoost</a> proposal by Alecks Gates</p>
-    </footer>
 </body>
 </html>
-

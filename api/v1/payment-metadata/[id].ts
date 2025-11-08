@@ -47,8 +47,9 @@ async function handleGet(req: VercelRequest, res: VercelResponse) {
     // Return only public fields (without updateToken)
     const response: PaymentMetadata = {
       id: metadata.id,
-      jpt: metadata.jpt,
       type: metadata.type,
+      metadata: metadata.metadata,
+      signature: metadata.signature,
       podcastGuid: metadata.podcastGuid,
       rssItemGuid: metadata.rssItemGuid
     };
