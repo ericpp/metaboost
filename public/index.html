@@ -472,7 +472,7 @@
 
         <main class="main-content">
             <div class="top-bar">
-                <div class="base-url">https://metaboost.vercel.app/api/v1</div>
+                <div class="base-url">https://metaboost.vercel.app</div>
                 <a href="metadata-viewer.html" class="view-data-link">📊 View Metadata</a>
             </div>
 
@@ -496,7 +496,7 @@
                 <section id="base-url">
                     <h3>Base URL</h3>
                     <div class="code-block">
-                        <pre>https://metaboost.vercel.app/api/v1</pre>
+                        <pre>https://metaboost.vercel.app</pre>
                     </div>
                 </section>
 
@@ -518,7 +518,7 @@
                     <div class="endpoint">
                         <div class="endpoint-header">
                             <span class="http-method method-post">POST</span>
-                            <span class="endpoint-path">/api/v1/payment-metadata</span>
+                            <span class="endpoint-path">/payment-metadata</span>
                         </div>
                         <div class="endpoint-body">
                             <p class="endpoint-description">
@@ -606,7 +606,7 @@
                     <div class="endpoint" id="get-metadata">
                         <div class="endpoint-header">
                             <span class="http-method method-get">GET</span>
-                            <span class="endpoint-path">/api/v1/payment-metadata/{id}</span>
+                            <span class="endpoint-path">/payment-metadata/{id}</span>
                         </div>
                         <div class="endpoint-body">
                             <p class="endpoint-description">
@@ -662,7 +662,7 @@
                     <div class="endpoint" id="list-metadata">
                         <div class="endpoint-header">
                             <span class="http-method method-get">GET</span>
-                            <span class="endpoint-path">/api/v1/payment-metadata/list</span>
+                            <span class="endpoint-path">/payment-metadata/list</span>
                         </div>
                         <div class="endpoint-body">
                             <p class="endpoint-description">
@@ -718,7 +718,7 @@
                     <div class="endpoint" id="find-by-episode">
                         <div class="endpoint-header">
                             <span class="http-method method-get">GET</span>
-                            <span class="endpoint-path">/api/v1/payment-metadata/findByRSSItem</span>
+                            <span class="endpoint-path">/payment-metadata/findByRSSItem</span>
                         </div>
                         <div class="endpoint-body">
                             <p class="endpoint-description">
@@ -757,7 +757,7 @@
                             <div class="schema-section">
                                 <div class="schema-title">Example Request</div>
                                 <div class="code-block">
-<pre>GET /api/v1/payment-metadata/findByRSSItem?podcastGuid=9b024349-ccf0-5f69-a609-6b82873eab3c&rssItemGuid=episode-123</pre>
+<pre>GET /payment-metadata/findByRSSItem?podcastGuid=9b024349-ccf0-5f69-a609-6b82873eab3c&rssItemGuid=episode-123</pre>
                                 </div>
                             </div>
 
@@ -790,7 +790,7 @@
                     <div class="endpoint" id="update-metadata">
                         <div class="endpoint-header">
                             <span class="http-method method-put">PUT</span>
-                            <span class="endpoint-path">/api/v1/payment-metadata?updateToken={token}</span>
+                            <span class="endpoint-path">/payment-metadata?updateToken={token}</span>
                         </div>
                         <div class="endpoint-body">
                             <p class="endpoint-description">
@@ -833,7 +833,7 @@
                     <div class="endpoint" id="delete-metadata">
                         <div class="endpoint-header">
                             <span class="http-method method-delete">DELETE</span>
-                            <span class="endpoint-path">/api/v1/payment-metadata/{id}?updateToken={token}</span>
+                            <span class="endpoint-path">/payment-metadata/{id}?updateToken={token}</span>
                         </div>
                         <div class="endpoint-body">
                             <p class="endpoint-description">

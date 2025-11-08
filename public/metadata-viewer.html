@@ -218,7 +218,7 @@
         .payment-header {
             padding: 20px;
             display: grid;
-            grid-template-columns: auto 1fr auto auto;
+            grid-template-columns: auto 1fr auto auto auto;
             gap: 20px;
             align-items: center;
             cursor: pointer;
@@ -258,6 +258,7 @@
             color: #586069;
             font-size: 1.2em;
             transition: transform 0.3s ease;
+            justify-self: end;
         }
 
         .expand-indicator.expanded {
@@ -439,7 +440,7 @@
 <body>
     <div class="header">
         <div>
-            <h1>💰 Value4Value Payment Metadata</h1>
+            <h1>⚡ Value4Value Payment Metadata</h1>
             <div class="header-subtitle">Browse podcast supporter payments from any cryptocurrency network</div>
         </div>
         <a href="index.html" class="back-link">← API Documentation</a>
@@ -521,14 +522,14 @@
 
             try {
                 const baseUrl = window.location.origin;
-                const response = await fetch(`${baseUrl}/api/v1/payment-metadata/list`);
+                const response = await fetch(`${baseUrl}/payment-metadata/list`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
 
                 const data = await response.json();
-                allMetadata = data.items || [];
+                allMetadata = data.data || [];
                 filteredMetadata = allMetadata;
                 currentPage = 1;
 
@@ -612,9 +613,20 @@
         function renderPaymentRow(item, index) {
             const metadata = item.metadata || {};
             const typeClass = item.type === 'monero' ? 'type-monero' : 'type-lightning';
-            const typeLabel = item.type === 'monero' ? '🔒 Monero' : 
-                            item.type === 'bitcoin-lightning' ? '⚡ Lightning' : 
-                            `💰 ${item.type}`;
+            let typeLabel;
+            if (item.type === 'monero') {
+                typeLabel = '🔒 Monero';
+            } else if (item.type === 'bitcoin-lightning' || item.type === 'lightning') {
+                typeLabel = '⚡ Lightning';
+            } else if (item.type === 'bitcoin' || item.type === 'btc') {
+                typeLabel = '₿ Bitcoin';
+            } else if (item.type === 'ethereum' || item.type === 'eth') {
+                typeLabel = 'Ξ Ethereum';
+            } else if (item.type === 'litecoin' || item.type === 'ltc') {
+                typeLabel = 'Ł Litecoin';
+            } else {
+                typeLabel = `⚡ ${item.type}`;
+            }
             
             // Format amount from value_msat_total or value_msat
             let amount = 'N/A';
@@ -636,7 +648,7 @@
                         <span class="payment-type ${typeClass}">${typeLabel}</span>
                         <span class="payment-id">${escapeHtml(item.id)}</span>
                         <span class="payment-amount">${amount}</span>
-                        ${item.signature ? '<span class="signature-badge">✓ SIGNED</span>' : ''}
+                        ${item.signature ? '<span class="signature-badge">✓ SIGNED</span>' : '<span></span>'}
                         <span class="expand-indicator" id="${rowId}-indicator">▼</span>
                     </div>
                     <div class="payment-details" id="${detailsId}">

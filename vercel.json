@@ -3,6 +3,7 @@
   "buildCommand": "echo 'No build required for serverless functions'",
   "outputDirectory": "public",
   "rewrites": [
+    { "source": "/payment-metadata/list", "destination": "/api/v1/payment-metadata/list" },
     { "source": "/payment-metadata/findByRSSItem", "destination": "/api/v1/payment-metadata/findByRSSItem" },
     { "source": "/payment-metadata/:id", "destination": "/api/v1/payment-metadata/[id]" },
     { "source": "/payment-metadata", "destination": "/api/v1/payment-metadata/index" }
