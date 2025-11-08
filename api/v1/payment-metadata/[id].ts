@@ -51,7 +51,8 @@ async function handleGet(req: VercelRequest, res: VercelResponse) {
       metadata: metadata.metadata,
       signature: metadata.signature,
       podcastGuid: metadata.podcastGuid,
-      rssItemGuid: metadata.rssItemGuid
+      rssItemGuid: metadata.rssItemGuid,
+      createdAt: metadata.createdAt
     };
 
     return sendSuccess(res, response, 200);

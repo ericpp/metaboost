@@ -45,7 +45,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       metadata: item.metadata,
       signature: item.signature,
       podcastGuid: item.podcastGuid,
-      rssItemGuid: item.rssItemGuid
+      rssItemGuid: item.rssItemGuid,
+      createdAt: item.createdAt
     }));
 
     // Return paginated response

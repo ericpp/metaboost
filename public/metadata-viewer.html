@@ -725,6 +725,17 @@
                 'remote_item_guid': 'Remote Item GUID'
             };
 
+            // Add received timestamp at the top of details
+            if (item.createdAt) {
+                const date = new Date(item.createdAt * 1000);
+                html += `
+                    <div class="detail-item">
+                        <div class="detail-label">Received At</div>
+                        <div class="detail-value">${escapeHtml(date.toLocaleString())}</div>
+                    </div>
+                `;
+            }
+
             for (const [key, label] of Object.entries(fieldMap)) {
                 if (metadata[key] !== undefined && metadata[key] !== null && metadata[key] !== '') {
                     let value = metadata[key];

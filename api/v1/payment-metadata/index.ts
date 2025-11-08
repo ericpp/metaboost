@@ -58,7 +58,8 @@ async function handlePost(req: VercelRequest, res: VercelResponse) {
       metadata: body.metadata,
       signature: body.signature,
       podcastGuid: body.podcastGuid,
-      rssItemGuid: body.rssItemGuid
+      rssItemGuid: body.rssItemGuid,
+      createdAt: Math.floor(Date.now() / 1000) // Unix timestamp
     };
 
     // Store metadata

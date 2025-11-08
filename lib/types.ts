@@ -49,6 +49,9 @@ export interface PaymentMetadata {
   // Query support fields
   podcastGuid?: string;
   rssItemGuid?: string;
+  
+  // Timestamp when metadata was received/stored
+  createdAt?: number;
 }
 
 export interface PaymentMetadataNew {
@@ -85,5 +88,6 @@ export interface PaymentMetadataResponse {
 
 export interface StoredPaymentMetadata extends PaymentMetadata {
   updateToken: string;
+  createdAt: number; // Always present in stored metadata
 }
 
