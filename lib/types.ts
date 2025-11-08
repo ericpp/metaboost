@@ -84,6 +84,7 @@ export interface PaymentMetadataUpdate {
 export interface PaymentMetadataResponse {
   id: string;
   updateToken: string;
+  self: string;
 }
 
 export interface StoredPaymentMetadata extends PaymentMetadata {

@@ -65,13 +65,19 @@ async function handlePost(req: VercelRequest, res: VercelResponse) {
     // Store metadata
     await storage.create(metadata);
 
+    // Construct self URL
+    const protocol = req.headers['x-forwarded-proto'] || 'https';
+    const host = req.headers.host || 'metaboost.vercel.app';
+    const selfUrl = `${protocol}://${host}/payment-metadata/${id}`;
+
     // Return response
     const response: PaymentMetadataResponse = {
       id,
-      updateToken
+      updateToken,
+      self: selfUrl
     };
 
-    return sendSuccess(res, response, 200);
+    return sendSuccess(res, response, 201);
   } catch (error) {
     console.error('Error in POST handler:', error);
     return sendError(res, 422, 'Validation exception');
@@ -122,10 +128,16 @@ async function handlePut(req: VercelRequest, res: VercelResponse) {
 
     await storage.update(updatedMetadata);
 
+    // Construct self URL
+    const protocol = req.headers['x-forwarded-proto'] || 'https';
+    const host = req.headers.host || 'metaboost.vercel.app';
+    const selfUrl = `${protocol}://${host}/payment-metadata/${body.id}`;
+
     // Return response
     const response: PaymentMetadataResponse = {
       id: body.id,
-      updateToken: newUpdateToken
+      updateToken: newUpdateToken,
+      self: selfUrl
     };
 
     return sendSuccess(res, response, 200);
